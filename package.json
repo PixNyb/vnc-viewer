@@ -5,19 +5,18 @@
   "scripts": {
     "dev": "node app.js",
     "build": "next build",
-    "start": "next start",
+    "start": "node app.js",
     "lint": "next lint"
   },
   "dependencies": {
     "@novnc/novnc": "^1.5.0",
+    "child_process": "^1.0.2",
     "dockerode": "^4.0.2",
     "express": "^4.19.2",
     "net": "^1.0.2",
     "next": "14.2.5",
-    "node-websockify": "^1.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "react-vnc": "^2.0.2",
     "ws": "^8.18.0"
   },
   "devDependencies": {

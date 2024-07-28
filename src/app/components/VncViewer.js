@@ -53,6 +53,7 @@ const VncViewer = ({ host, port, options }) => {
             rfbRef.current.addEventListener('disconnect', () => {
                 options?.onDisconnect?.();
                 setIsConnected(false);
+                setRequiresAuthentication(false);
             });
 
             rfbRef.current.addEventListener('credentialsrequired', () => {
@@ -85,12 +86,12 @@ const VncViewer = ({ host, port, options }) => {
         return () => {
             if (rfbRef.current && typeof rfbRef.current.disconnect === 'function') {
                 rfbRef.current.disconnect();
+                rfbRef.current._sock.close();
             }
         };
     }, [RFB, host, port, options]);
 
     const handleLogin = (username, password) => {
-        console.log('Logging in', username, password);
         if (rfbRef.current && typeof rfbRef.current.sendCredentials === 'function') {
             rfbRef.current.sendCredentials({ username, password });
             setRequiresAuthentication(false);
@@ -122,48 +123,50 @@ const VncViewer = ({ host, port, options }) => {
     return (
         <div
             ref={canvasRef}
-            className={`vnc-canvas ${isConnected ? 'connected' : requiresAuthentication ? 'requires-authentication' : 'disconnected'} ${options?.standalone ? 'standalone' : ''}`}
+            className={`vnc-canvas ${isConnected ? 'connected' : requiresAuthentication ? 'requires-authentication' : 'disconnected'}`}
         >
-            {isConnected && options?.showExpand &&
-                <div className='expand'>
-                    <Link href={{
-                        pathname: '/view/[container]/[port]',
-                        query: {
-                            container: host,
-                            port,
-                        },
-                    }}>
-                        <i className='fas fa-expand'></i>
-                    </Link>
+            <div className='overlay'>
+                {isConnected && options?.expandPath &&
+                    <div className='expand'>
+                        <Link href={{
+                            pathname: options.expandPath,
+                        }}>
+                            <i className='fas fa-expand'></i>
+                        </Link>
+                    </div>
+                }
+
+                <div className='status'>
+                    {getStatusIcon()}
                 </div>
-            }
 
-            <div className='status'>
-                {getStatusIcon()}
+                {requiresAuthentication &&
+                    <form className='login'>
+                        <span className='form-group'>
+                            <label htmlFor={`username-${host}-${port}`}>Username</label>
+                            <input type='text' id={`username-${host}-${port}`} />
+                        </span>
+                        <span className='form-group'>
+                            <label htmlFor={`password-${host}-${port}`}>Password</label>
+                            <input type='password' id={`password-${host}-${port}`} />
+                        </span>
+                        <span className='form-tools'>
+                            <button type='submit' onClick={(event) => {
+                                event.preventDefault();
+                                handleLogin(
+                                    document.getElementById(`username-${host}-${port}`).value,
+                                    document.getElementById(`password-${host}-${port}`).value
+                                );
+                            }}>Login</button>
+                        </span>
+                    </form>
+                }
+
+                {!isConnected && !requiresAuthentication && !authenticationFailed &&
+                    <i className='fa fa-link-slash' style={{ fontSize: '2em' }}></i>
+                }
             </div>
-
-            {requiresAuthentication &&
-                <form className='login'>
-                    <span className='form-group'>
-                        <label htmlFor={`username-${host}-${port}`}>Username</label>
-                        <input type='text' id={`username-${host}-${port}`} />
-                    </span>
-                    <span className='form-group'>
-                        <label htmlFor={`password-${host}-${port}`}>Password</label>
-                        <input type='password' id={`password-${host}-${port}`} />
-                    </span>
-                    <span className='form-tools'>
-                        <button type='submit' onClick={(event) => {
-                            event.preventDefault();
-                            handleLogin(
-                                document.getElementById(`username-${host}-${port}`).value,
-                                document.getElementById(`password-${host}-${port}`).value
-                            );
-                        }}>Login</button>
-                    </span>
-                </form>
-            }
-        </div >
+        </div>
     );
 };
 

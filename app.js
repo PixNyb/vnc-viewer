@@ -32,7 +32,6 @@ nextApp.prepare().then(() => {
     start();
 
     server.on("upgrade", (req, socket, head) => {
-        console.log('Upgrade request received', req.url);
         const { pathname } = parse(req.url || "/", true);
 
         if (pathname === "/_next/webpack-hmr") {
@@ -41,8 +40,6 @@ nextApp.prepare().then(() => {
 
         if (pathname === "/api/socket") {
             ws.handleUpgrade(req, socket, head, (socket) => {
-                console.log('Client connected to WebSocket server', req.url);
-
                 const params = new URLSearchParams(req.url.split('?')[1]);
                 const host = params.get('host');
                 const port = params.get('port');

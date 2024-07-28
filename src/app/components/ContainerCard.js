@@ -17,7 +17,7 @@ export default function ContainerCard({ container }) {
     return (
         <div className="card">
             <VncViewer host={containerData.host} port={containerData.port} options={{
-                showExpand: true,
+                expandPath: `/view/${containerData.id}`
             }} />
             <h3>{containerData.name}</h3>
             <span className="text-small status">{container.image}</span>
