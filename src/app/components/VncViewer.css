@@ -1,0 +1,127 @@
+.vnc-canvas {
+    border: 1rem solid var(--clr-background);
+    box-sizing: border-box;
+    background-color: var(--clr-background);
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    flex: 1 1 200px;
+}
+
+.vnc-canvas button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 5px solid var(--clr-accent);
+    background-color: var(--clr-accent);
+    color: var(--clr-text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.3s;
+}
+
+.vnc-canvas button:hover {
+    background-color: var(--clr-background);
+}
+
+.vnc-canvas.standalone {
+    border-color: var(--clr-accent);
+    background-color: var(--clr-accent);
+}
+
+.vnc-canvas.standalone .login {
+    padding: 1rem;
+    background-color: var(--clr-background);
+}
+
+.vnc-canvas.bell {
+    animation: shake 0.3s infinite;
+}
+
+.vnc-canvas .status,
+.vnc-canvas .expand {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--clr-background);
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vnc-canvas.standalone .status,
+.vnc-canvas.standalone .expand {
+    background-color: var(--clr-accent);
+}
+
+.vnc-canvas .expand {
+    bottom: unset;
+    right: unset;
+    top: 0;
+    right: 0;
+}
+
+.vnc-canvas a {
+    margin: 0 !important;
+}
+
+.vnc-canvas i.green {
+    color: var(--clr-green);
+}
+
+.vnc-canvas i.red {
+    color: var(--clr-red);
+}
+
+.vnc-canvas i.yellow {
+    color: var(--clr-yellow);
+}
+
+.vnc-canvas i.gray {
+    color: var(--clr-gray);
+}
+
+.vnc-canvas>*:not(div) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes pulse {
+    0% {
+        background-color: var(--clr-background);
+    }
+
+    50% {
+        background-color: var(--clr-accent);
+    }
+
+    100% {
+        background-color: var(--clr-background);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

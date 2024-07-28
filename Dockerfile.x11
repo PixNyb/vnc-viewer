@@ -1,0 +1,17 @@
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    x11vnc \
+    x11-apps \
+    xterm \
+    fluxbox \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV DISPLAY=:1
+EXPOSE 5900
+
+CMD rm -f /tmp/.X*-lock && \
+    Xvfb ${DISPLAY} -screen 0 1024x768x16 & \
+    fluxbox & \
+    x11vnc -shared -forever -display ${DISPLAY} -rfbport 5900 -nopw -xkb -verbose -noxrecord -noxfixes -noxdamage
