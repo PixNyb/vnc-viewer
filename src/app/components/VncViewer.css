@@ -45,7 +45,8 @@
 }
 
 .vnc-canvas .status,
-.vnc-canvas .expand {
+.vnc-canvas .expand,
+.vnc-canvas .title {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -60,9 +61,17 @@
 
 .vnc-canvas .expand {
     bottom: unset;
-    right: unset;
     top: 0;
-    right: 0;
+}
+
+.vnc-canvas .title {
+    bottom: unset;
+    right: unset;
+    width: unset;
+    top: 0;
+    left: 0;
+    padding: 0 0.5rem;
+    font-weight: 500;
 }
 
 .vnc-canvas .login {

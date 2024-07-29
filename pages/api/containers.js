@@ -102,7 +102,7 @@ export default async function handler(req, res) {
                     image: container.Image,
                     status: container.Status,
                     labels: container.Labels,
-                    network: container.NetworkSettings,
+                    network: container.NetworkSettings.Networks[sharedNetwork],
                     host: vncViewerIp,
                     port: vncViewerPort,
                 };

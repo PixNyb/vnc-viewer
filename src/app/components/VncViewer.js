@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import './VncViewer.css';
 
-const VncViewer = ({ host, port, options }) => {
+const VncViewer = ({ host, port, options, link, title }) => {
     const canvasRef = useRef(null);
     const rfbRef = useRef(null);
     const [RFB, setRFB] = useState(null);
@@ -126,12 +126,18 @@ const VncViewer = ({ host, port, options }) => {
             className={`vnc-canvas ${isConnected ? 'connected' : requiresAuthentication ? 'requires-authentication' : 'disconnected'}`}
         >
             <div className='overlay'>
-                {isConnected && options?.expandPath &&
+                {title &&
+                    <div className='title'>
+                        {title}
+                    </div>
+                }
+
+                {isConnected && link &&
                     <div className='expand'>
                         <Link href={{
-                            pathname: options.expandPath,
+                            pathname: link.path,
                         }}>
-                            <i className='fas fa-expand'></i>
+                            <i className={link.icon || 'fas fa-expand'}></i>
                         </Link>
                     </div>
                 }

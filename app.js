@@ -34,12 +34,12 @@ nextApp.prepare().then(() => {
     server.on("upgrade", (req, socket, head) => {
         const { pathname } = parse(req.url || "/", true);
 
-        if (pathname === "/_next/webpack-hmr") {
+        if (pathname === "/_next/webpack-hmr")
             nextApp.getUpgradeHandler()(req, socket, head);
-        }
 
         if (pathname === "/api/socket") {
             ws.handleUpgrade(req, socket, head, (socket) => {
+                console.debug('Client connected to WebSocket server');
                 const params = new URLSearchParams(req.url.split('?')[1]);
                 const host = params.get('host');
                 const port = params.get('port');
@@ -53,8 +53,6 @@ nextApp.prepare().then(() => {
                 const vncSocket = new net.Socket();
 
                 vncSocket.connect(port, host, () => {
-                    console.log(`Connected to VNC server at ${host}:${port}`);
-
                     socket.on('message', (data) => {
                         try {
                             vncSocket.write(data);
@@ -72,13 +70,13 @@ nextApp.prepare().then(() => {
                     });
 
                     socket.on('close', () => {
-                        console.log('Client disconnected from WebSocket server');
+                        console.debug('Client disconnected from WebSocket server');
                         vncSocket.end();
                     });
                 });
 
                 vncSocket.on('close', () => {
-                    console.log('Disconnected from VNC server');
+                    console.debug('Disconnected from VNC server');
                     socket.close();
                 });
             });

@@ -1,6 +1,5 @@
 import VncViewer from '@/app/components/VncViewer';
 import Head from 'next/head';
-import Link from 'next/link';
 
 export async function getServerSideProps(context) {
     const { id } = context.params;
@@ -19,15 +18,10 @@ export async function getServerSideProps(context) {
 export default function Page({ container }) {
     return (
         <>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', gap: '1rem', padding: '2rem 2rem 1rem 2rem' }}>
-                <Link href='/'>
-                    <i className='fas fa-arrow-left'></i>
-                </Link>
-                <h1 style={{ margin: 0 }}>
-                    {container.name}
-                </h1>
-            </div>
-            <VncViewer host={container.host} port={container.port} />
+            <VncViewer title={container.name} host={container.host} port={container.port} link={{
+                path: '/',
+                icon: 'fas fa-arrow-left',
+            }} />
         </>
     )
 }
