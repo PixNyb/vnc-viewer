@@ -109,15 +109,15 @@ const VncViewer = ({ host, port, options, link, title }) => {
 
     const getStatusIcon = () => {
         if (isConnected)
-            return <i className='fas fa-check green'></i>;
+            return <i className='fas fa-check' style={{ color: 'var(--clr-green)' }}></i>;
 
         if (requiresAuthentication)
-            return <i className='fas fa-arrow-right-to-bracket yellow'></i>;
+            return <i className='fas fa-arrow-right-to-bracket' style={{ color: 'var(--clr-yellow)' }}></i>;
 
         if (authenticationFailed)
-            return <i className='fas fa-lock red'></i>;
+            return <i className='fas fa-lock' style={{ color: 'var(--clr-red)' }}></i>;
 
-        return <i className='fas fa-times red'></i>;
+        return <i className='fas fa-times' style={{ color: 'var(--clr-red)' }}></i>;
     };
 
     return (
@@ -136,6 +136,8 @@ const VncViewer = ({ host, port, options, link, title }) => {
                     <div className='expand'>
                         <Link href={{
                             pathname: link.path,
+                        }} style={{
+                            margin: '0'
                         }}>
                             <i className={link.icon || 'fas fa-expand'}></i>
                         </Link>
@@ -163,7 +165,7 @@ const VncViewer = ({ host, port, options, link, title }) => {
                                     document.getElementById(`username-${host}-${port}`).value,
                                     document.getElementById(`password-${host}-${port}`).value
                                 );
-                            }}>Login</button>
+                            }} className=''>Login</button>
                         </span>
                     </form>
                 }

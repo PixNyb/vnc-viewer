@@ -25,21 +25,6 @@
     pointer-events: auto;
 }
 
-.vnc-canvas button {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 5px solid var(--clr-accent);
-    background-color: var(--clr-accent);
-    color: var(--clr-text);
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.3s;
-}
-
-.vnc-canvas button:hover {
-    background-color: var(--clr-background);
-}
-
 .vnc-canvas.bell {
     animation: shake 0.3s infinite;
 }
@@ -77,26 +62,6 @@
 .vnc-canvas .login {
     background-color: var(--clr-background);
     padding: 1rem;
-}
-
-.vnc-canvas a {
-    margin: 0 !important;
-}
-
-.vnc-canvas i.green {
-    color: var(--clr-green);
-}
-
-.vnc-canvas i.red {
-    color: var(--clr-red);
-}
-
-.vnc-canvas i.yellow {
-    color: var(--clr-yellow);
-}
-
-.vnc-canvas i.gray {
-    color: var(--clr-gray);
 }
 
 .vnc-canvas>*:not(div) {

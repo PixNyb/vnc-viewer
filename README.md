@@ -23,6 +23,14 @@ docker run -d -p 3000:3000 \
 > [!WARNING]
 > The container in itself doesn't have any security measures implemented. It is recommended to run the container in a secure environment. (e.g. behind traefik with authentication middleware such as [pixnyb/authentication-proxy](https://github.com/PixNyb/authentication-proxy))
 
+### Environment variables
+
+The following environment variables can be set to configure the application:
+
+| Variable                      | Description                                   | Default |
+| ----------------------------- | --------------------------------------------- | ------- |
+| `NEXT_PUBLIC_DISABLE_CREDITS` | Whether the credits should be disabled or not | `false` |
+
 ### Connecting to a VNC server
 
 The application is capable of discovering VNC servers running in other containers. To enable this feature, you need to add the following labels to the container running the VNC server:
