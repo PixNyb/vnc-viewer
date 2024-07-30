@@ -9,7 +9,7 @@ export default function Footer() {
             <span>
                 <a href="https://github.com/pixnyb/vnc-viewer" target="_blank" referrerPolicy="no-referrer" style={{ textDecoration: 'none' }}>
                     <i className="fas fa-code" title="View source code"></i>
-                </a>&nbsp;
+                </a>{'\u00A0'}
                 <a href="https://www.buymeacoffee.com/pixnyb" target="_blank" referrerPolicy="no-referrer" style={{ textDecoration: 'none' }}>
                     < i className="fas fa-coffee" title="Buy me a coffee"></i>
                 </a>

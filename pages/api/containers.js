@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
     try {
         const filters = {
-            label: ["vnc-viewer.enabled=true"],
+            label: ["vnc-viewer.enable=true"],
         };
 
         // Check if Docker is running in Swarm mode

@@ -37,13 +37,22 @@ The application is capable of discovering VNC servers running in other container
 
 ```yaml
 labels:
-  - "vnc-viewer.enabled=true"
+  - "vnc-viewer.enable=true"
   - "vnc-viewer.label=My VNC Server" # Optional
   - "vnc-viewer.port=5900" # Optional, defaults to 5900
 ```
 
 > [!NOTE]
 > The containers must both exist in the same network. Otherwise no connection to the VNC server can be established.
+
+> [!NOTE]
+> The container offers Docker Swarm support. When running in a Docker Swarm, make sure to constrain the service to manager nodes only. Otherwise, the application won't be able to discover the VNC servers.
+> ```yaml
+> deploy:
+>  placement:
+>    constraints:
+>      - node.role == manager
+> ```
 
 > [!NOTE]
 > When authentication is necessary to connect to a vnc server, a login form will be displayed. Not all vnc servers accept a username, so the username field is optional.

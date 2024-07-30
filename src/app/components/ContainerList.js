@@ -57,11 +57,11 @@ export default function ContainerList() {
             {containers.length === 0 &&
                 <div>
                     <p>
-                        To get started, add the label <code>vnc-viewer.enabled</code> to your container running a VNC server and make sure it exists in the same network as the vnc-viewer container.<br />
+                        To get started, add the label <code>vnc-viewer.enable</code> to your container running a VNC server and make sure it exists in the same network as the vnc-viewer container.<br />
                         Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
                     </p>
                     <pre>
-                        <code>docker run -d --label vnc-viewer.enabled my-container</code>
+                        <code>docker run -d --label vnc-viewer.enable my-container</code>
                     </pre>
                     <p>
                         Read the <a href="https://github.com/PixNyb/vnc-viewer/blob/main/README.md">documentation</a> for more information.
