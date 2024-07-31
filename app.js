@@ -39,7 +39,7 @@ nextApp.prepare().then(() => {
 
         if (pathname === "/api/socket") {
             ws.handleUpgrade(req, socket, head, (socket) => {
-                console.debug('Client connected to WebSocket server');
+                console.debug(' WS client connected to WebSocket server');
                 const params = new URLSearchParams(req.url.split('?')[1]);
                 const host = params.get('host');
                 const port = params.get('port');
@@ -52,33 +52,38 @@ nextApp.prepare().then(() => {
 
                 const vncSocket = new net.Socket();
 
-                vncSocket.connect(port, host, () => {
-                    socket.on('message', (data) => {
-                        try {
-                            vncSocket.write(data);
-                        } catch (error) {
-                            console.error('Failed to parse message from client', error);
-                        }
+                try {
+                    vncSocket.connect(port, host, () => {
+                        socket.on('message', (data) => {
+                            try {
+                                vncSocket.write(data);
+                            } catch (error) {
+                                console.error(` WS /api/socket failed to send data to VNC server at ${host}:${port}`, error);
+                            }
+                        });
+
+                        vncSocket.on('data', (data) => {
+                            try {
+                                socket.send(data);
+                            } catch (error) {
+                                console.error(` WS /api/socket VNC server at ${host}:${port} failed to send data to client`, error);
+                            }
+                        });
+
+                        socket.on('close', () => {
+                            console.debug(` WS /api/socket client disconnected, closing VNC server at ${host}:${port}`);
+                            vncSocket.end();
+                        });
                     });
 
-                    vncSocket.on('data', (data) => {
-                        try {
-                            socket.send(data);
-                        } catch (error) {
-                            console.error('Failed to send message to client', error);
-                        }
+                    vncSocket.on('close', () => {
+                        console.debug(` WS /api/socket VNC server at ${host}:${port} disconnected`);
+                        socket.close();
                     });
-
-                    socket.on('close', () => {
-                        console.debug('Client disconnected from WebSocket server');
-                        vncSocket.end();
-                    });
-                });
-
-                vncSocket.on('close', () => {
-                    console.debug('Disconnected from VNC server');
+                } catch (error) {
+                    console.error(` WS /api/socket failed to connect to VNC server at ${host}:${port}`, error);
                     socket.close();
-                });
+                }
             });
         }
     });

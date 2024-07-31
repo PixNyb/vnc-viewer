@@ -16,25 +16,28 @@
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    flex-flow: column nowrap;
+    justify-content: space-between;
     align-items: center;
     pointer-events: none;
 }
 
-.vnc-canvas .overlay * {
-    pointer-events: auto;
+.vnc-canvas .overlay .header,
+.vnc-canvas .overlay .controls {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.vnc-canvas.bell {
-    animation: shake 0.3s infinite;
+.vnc-canvas .overlay .group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
 }
 
-.vnc-canvas .status,
-.vnc-canvas .expand,
-.vnc-canvas .title {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+.vnc-canvas .overlay .group>* {
     background-color: var(--clr-background);
     width: 1.5rem;
     height: 1.5rem;
@@ -44,31 +47,18 @@
     align-items: center;
 }
 
-.vnc-canvas .expand {
-    bottom: unset;
-    top: 0;
+.vnc-canvas .overlay .group>*[interactive] {
+    cursor: pointer;
+    pointer-events: auto;
 }
 
-.vnc-canvas .title {
-    bottom: unset;
-    right: unset;
-    width: unset;
-    top: 0;
-    left: 0;
-    padding: 0 0.5rem;
-    font-weight: 500;
+.vnc-canvas .overlay .group>*[interactive]:hover {
+    background-color: var(--clr-accent);
 }
 
 .vnc-canvas .login {
     background-color: var(--clr-background);
     padding: 1rem;
-}
-
-.vnc-canvas>*:not(div) {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 @keyframes pulse {

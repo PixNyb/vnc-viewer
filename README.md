@@ -57,6 +57,9 @@ labels:
 > [!NOTE]
 > When authentication is necessary to connect to a vnc server, a login form will be displayed. Not all vnc servers accept a username, so the username field is optional.
 
+> [!WARNING]
+> The application doesn't currently check if a socket *should* be connected to. The WebSocket connection can be used to connect to any host and port, this makes the application vulnerable to attacks. It is recommended to run the application in a secure environment with an isolated network.
+
 ### Connecting to a VNC server manually
 
 This feature currently isn't implemented. The container is designed to be used as an interface for managing other containers running VNC servers.

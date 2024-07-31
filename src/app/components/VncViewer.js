@@ -11,6 +11,7 @@ const VncViewer = ({ host, port, options, link, title }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [requiresAuthentication, setRequiresAuthentication] = useState(false);
     const [authenticationFailed, setAuthenticationFailed] = useState(false);
+    const [windowTitle, setWindowTitle] = useState(false);
 
     useEffect(() => {
         if (!RFB) return; // Wait until RFB is imported
@@ -42,42 +43,78 @@ const VncViewer = ({ host, port, options, link, title }) => {
             rfbRef.current.background = options?.background || 'transparent';
             rfbRef.current.viewOnly = options?.viewOnly || false;
             rfbRef.current.scaleViewport = options?.scaleViewport || true;
-            rfbRef.current.resizeSession = options?.resizeSession || true;
+            rfbRef.current.resizeSession = options?.resizeSession || false;
             rfbRef.current.showDotCursor = options?.showDotCursor || false;
 
             rfbRef.current.addEventListener('connect', () => {
-                options?.onConnect?.();
+                options?.onConnect?.(canvasRef.current);
                 setIsConnected(true);
             });
 
             rfbRef.current.addEventListener('disconnect', () => {
-                options?.onDisconnect?.();
+                options?.onDisconnect?.(canvasRef.current);
                 setIsConnected(false);
                 setRequiresAuthentication(false);
             });
 
             rfbRef.current.addEventListener('credentialsrequired', () => {
-                options?.onCredentialsRequired?.();
+                options?.onCredentialsRequired?.(canvasRef.current);
                 setRequiresAuthentication(true);
             });
 
             rfbRef.current.addEventListener('securityfailure', () => {
-                options?.onSecurityFailure?.();
+                options?.onSecurityFailure?.(canvasRef.current);
                 setAuthenticationFailed(true);
             });
 
             rfbRef.current.addEventListener('bell', (event) => {
-                options?.onBell?.(event);
+                options?.onBell?.(canvasRef.current, event);
                 canvasRef.current.classList.add('bell');
                 setTimeout(() => canvasRef.current.classList.remove('bell'), 300);
             });
 
-            rfbRef.current.addEventListener('clipboard', (event) => {
-                options?.onClipboard?.(event);
+            rfbRef.current.addEventListener('clipboard', async (event) => {
+                options?.onClipboard?.(canvasRef.current, event);
+
+                if (navigator.clipboard) {
+                    try {
+                        await navigator.clipboard.writeText(event.detail.text);
+                    } catch (error) {
+                        console.warn('Could not write to clipboard:', error);
+                    }
+                } else {
+                    console.warn('Clipboard API is not supported, using fallback');
+
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = event.detail.text;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    } catch (error) {
+                        console.warn('Could not write to clipboard:', error);
+                    }
+                }
             });
 
             rfbRef.current.addEventListener('desktopname', (event) => {
-                options?.onDesktopName?.(event);
+                options?.onDesktopName?.(canvasRef.current, event);
+                setWindowTitle(event.detail.name);
+            });
+
+            canvasRef.current.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                options?.onContextMenu?.(canvasRef.current, event);
+            });
+
+            rfbRef.current.addEventListener('paste', async (event) => {
+                event.preventDefault();
+                let text = await navigator.clipboard.readText();
+
+                options?.onPaste?.(canvasRef.current, event);
+                console.log('Pasting:', text);
+                rfbRef.current.clipboardPasteFrom(text);
             });
         } catch (error) {
             console.error('Failed to create RFB instance:', error);
@@ -123,29 +160,38 @@ const VncViewer = ({ host, port, options, link, title }) => {
     return (
         <div
             ref={canvasRef}
-            className={`vnc-canvas ${isConnected ? 'connected' : requiresAuthentication ? 'requires-authentication' : 'disconnected'}`}
+            className='vnc-canvas'
         >
             <div className='overlay'>
-                {title &&
-                    <div className='title'>
-                        {title}
+                <div className='header'>
+                    <div className='group'>
+                        {title &&
+                            <div
+                                className='title'
+                                style={{
+                                    width: 'fit-content',
+                                    paddingRight: '0.5rem'
+                                }}>
+                                {title}
+                                {windowTitle && options?.showWindowTitle && ` - ${windowTitle}`}
+                            </div>
+                        }
                     </div>
-                }
-
-                {isConnected && link &&
-                    <div className='expand'>
-                        <Link href={{
-                            pathname: link.path,
-                        }} style={{
-                            margin: '0'
-                        }}>
-                            <i className={link.icon || 'fas fa-expand'}></i>
-                        </Link>
+                    <div className='group'>
+                        {link &&
+                            <Link
+                                href={{
+                                    pathname: link.path,
+                                }}
+                                style={{
+                                    margin: '0',
+                                    textDecoration: 'none',
+                                }}
+                                interactive='interactive'>
+                                <i className={link.icon || 'fas fa-expand'}></i>
+                            </Link>
+                        }
                     </div>
-                }
-
-                <div className='status'>
-                    {getStatusIcon()}
                 </div>
 
                 {requiresAuthentication &&
@@ -173,6 +219,31 @@ const VncViewer = ({ host, port, options, link, title }) => {
                 {!isConnected && !requiresAuthentication && !authenticationFailed &&
                     <i className='fa fa-link-slash' style={{ fontSize: '2em' }}></i>
                 }
+
+                <div className='controls'>
+                    <div className='group'>
+                        {isConnected &&
+                            <i
+                                className='fas fa-clipboard'
+                                onClick={() => {
+                                    const event = new ClipboardEvent('paste', {
+                                        dataType: 'text/plain',
+                                        bubbles: true,
+                                        cancelable: true,
+                                    });
+
+                                    rfbRef.current.dispatchEvent(event);
+                                }}
+                                interactive='interactive'
+                                title='Share clipboard'
+                                role='button'
+                            ></i>
+                        }
+                    </div>
+                    <div className='group'>
+                        {getStatusIcon()}
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -18,10 +18,19 @@ export async function getServerSideProps(context) {
 export default function Page({ container }) {
     return (
         <>
-            <VncViewer title={container.name} host={container.host} port={container.port} link={{
-                path: '/',
-                icon: 'fas fa-arrow-left',
-            }} />
+            <VncViewer
+                title={container.name}
+                host={container.host}
+                port={container.port}
+                link={{
+                    path: '/',
+                    icon: 'fas fa-arrow-left',
+                }}
+                options={{
+                    showWindowTitle: true,
+                    resizeSession: true,
+                }}
+            />
         </>
     )
 }

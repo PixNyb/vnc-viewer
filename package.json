@@ -1,6 +1,6 @@
 {
-  "name": "x11-webviewer",
-  "version": "0.1.0",
+  "name": "vnc-viewer",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "node app.js",
