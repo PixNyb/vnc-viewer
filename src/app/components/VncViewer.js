@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import './VncViewer.css';
+import styles from './VncViewer.module.scss';
 
 const VncViewer = ({ host, port, options, link, title }) => {
     const canvasRef = useRef(null);
     const rfbRef = useRef(null);
     const [RFB, setRFB] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [connectionFailed, setConnectionFailed] = useState(false);
     const [requiresAuthentication, setRequiresAuthentication] = useState(false);
     const [authenticationFailed, setAuthenticationFailed] = useState(false);
     const [windowTitle, setWindowTitle] = useState(false);
@@ -49,11 +50,13 @@ const VncViewer = ({ host, port, options, link, title }) => {
             rfbRef.current.addEventListener('connect', () => {
                 options?.onConnect?.(canvasRef.current);
                 setIsConnected(true);
+                setConnectionFailed(false);
             });
 
             rfbRef.current.addEventListener('disconnect', () => {
                 options?.onDisconnect?.(canvasRef.current);
                 setIsConnected(false);
+                setConnectionFailed(true);
                 setRequiresAuthentication(false);
             });
 
@@ -160,24 +163,20 @@ const VncViewer = ({ host, port, options, link, title }) => {
     return (
         <div
             ref={canvasRef}
-            className='vnc-canvas'
+            className={`${styles.canvas} ${options?.className || ''}`}
+            style={options?.style || {}}
         >
-            <div className='overlay'>
-                <div className='header'>
-                    <div className='group'>
+            <div className={styles.overlay}>
+                <div className={styles.header}>
+                    <div className={styles.group}>
                         {title &&
-                            <div
-                                className='title'
-                                style={{
-                                    width: 'fit-content',
-                                    paddingRight: '0.5rem'
-                                }}>
+                            <div className={styles.text}>
                                 {title}
                                 {windowTitle && options?.showWindowTitle && ` - ${windowTitle}`}
                             </div>
                         }
                     </div>
-                    <div className='group'>
+                    <div className={styles.group}>
                         {link &&
                             <Link
                                 href={{
@@ -217,11 +216,13 @@ const VncViewer = ({ host, port, options, link, title }) => {
                 }
 
                 {!isConnected && !requiresAuthentication && !authenticationFailed &&
-                    <i className='fa fa-link-slash' style={{ fontSize: '2em' }}></i>
+                    <span className={styles.icon}>
+                        <i className={`${connectionFailed ? 'fas fa-link-slash' : 'fas fa-spinner fa-spin'}`}></i>
+                    </span>
                 }
 
-                <div className='controls'>
-                    <div className='group'>
+                <div className={styles.footer}>
+                    <div className={styles.group}>
                         {isConnected &&
                             <i
                                 className='fas fa-clipboard'
@@ -240,12 +241,12 @@ const VncViewer = ({ host, port, options, link, title }) => {
                             ></i>
                         }
                     </div>
-                    <div className='group'>
+                    <div className={styles.group}>
                         {getStatusIcon()}
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

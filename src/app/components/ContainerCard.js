@@ -15,10 +15,21 @@ export default function ContainerCard({ container }) {
         return null;
 
     return (
-        <div className="card">
-            <VncViewer title={containerData.name} host={containerData.host} port={containerData.port} link={{
+        <VncViewer
+            title={containerData.name}
+            host={containerData.host}
+            port={containerData.port}
+            link={{
                 path: `/view/${containerData.id}`
-            }} />
-        </div>
+            }}
+            options={{
+                style: {
+                    ["--vnc-clr-ui"]: "var(--clr-accent)",
+                    ["--vnc-clr-ui-hover"]: "var(--clr-background)",
+                    ["--vnc-clr-background"]: "var(--clr-background)",
+                    border: '1rem solid var(--vnc-clr-ui)',
+                }
+            }}
+        />
     );
 }

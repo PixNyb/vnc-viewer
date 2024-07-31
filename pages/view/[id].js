@@ -29,6 +29,11 @@ export default function Page({ container }) {
                 options={{
                     showWindowTitle: true,
                     resizeSession: true,
+                    style: {
+                        ["--vnc-clr-ui"]: "var(--clr-background)",
+                        ["--vnc-clr-ui-hover"]: "var(--clr-accent)",
+                        ["--vnc-clr-background"]: "var(--clr-accent)",
+                    }
                 }}
             />
         </>

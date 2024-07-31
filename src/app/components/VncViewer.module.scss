@@ -1,0 +1,85 @@
+.canvas {
+    --vnc-clr-background: #2d2d2d;
+    --vnc-clr-ui: #fafafa;
+    --vnc-clr-ui-hover: #f0f0f0;
+
+    box-sizing: border-box;
+    background-color: var(--vnc-clr-background);
+    width: 100%;
+    max-width: 100%;
+    min-height: 400px;
+    position: relative;
+    flex: 1 1 200px;
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+
+        .icon {
+            font-size: 2rem;
+            color: var(--vnc-clr-background);
+            filter: brightness(1.5);
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+
+            .group {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0;
+
+                &>* {
+                    background-color: var(--vnc-clr-ui);
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    font-size: 0.8rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    &.text {
+                        width: fit-content;
+                        padding: 0 0.5rem;
+                        font-weight: 500;
+                    }
+
+                    &[interactive] {
+                        cursor: pointer;
+                        pointer-events: auto;
+
+                        &:hover {
+                            background-color: var(--vnc-clr-ui-hover);
+                        }
+                    }
+
+                    &,
+                    * {
+                        padding: 0;
+                        margin: 0;
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+            }
+        }
+
+        .login {
+            background-color: var(--vnc-clr-background);
+            padding: 1rem;
+        }
+    }
+}
