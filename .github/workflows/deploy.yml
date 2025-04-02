@@ -68,26 +68,26 @@ jobs:
       - name: Run eslint
         run: npm run lint
 
-#   test:
-#     runs-on: ubuntu-latest
-#     env:
-#       LONG_LIVED_TOKENS_ENABLED: true
+  #   test:
+  #     runs-on: ubuntu-latest
+  #     env:
+  #       LONG_LIVED_TOKENS_ENABLED: true
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+  #     steps:
+  #       - name: Checkout code
+  #         uses: actions/checkout@v4
 
-#       - name: Install node
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version-file: .nvmrc
-#           cache: "npm"
+  #       - name: Install node
+  #         uses: actions/setup-node@v4
+  #         with:
+  #           node-version-file: .nvmrc
+  #           cache: "npm"
 
-#       - name: Install dependencies
-#         run: npm ci
+  #       - name: Install dependencies
+  #         run: npm ci
 
-#       - name: Run tests
-#         run: npm run test
+  #       - name: Run tests
+  #         run: npm run test
 
   build-and-push:
     runs-on: ubuntu-latest
@@ -124,5 +124,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
+            ghcr.io/${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
+            nexus.roelc.dev/vnc-viewer:${{ needs.setup.outputs.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
