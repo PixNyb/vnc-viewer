@@ -3,7 +3,6 @@ import { getK8sClient } from "@/app/utils/k8s-util";
 export default async function handler(req, res) {
     try {
         const k8sClient = await getK8sClient();
-        console.log(k8sClient)
 
         const labelSelector = 'dev.roelc.vnc-viewer/enable=true';
 
