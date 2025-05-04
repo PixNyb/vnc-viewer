@@ -57,12 +57,23 @@ export default function ContainerList() {
 
             {containers.length === 0 &&
                 <div>
-                    <p>
-                        To get started, add the label <code>vnc-viewer.enable</code> to your container running a VNC server and make sure it exists in the same network as the vnc-viewer container.<br />
-                        Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
-                    </p>
+                    {process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? (
+                        <p>
+                            To get started, add the label <code>vnc-viewer.enable</code> to your Kubernetes pod running a VNC server and ensure it is accessible within the same namespace or network.<br />
+                            Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
+                        </p>
+                    ) : (
+                        <p>
+                            To get started, add the label <code>vnc-viewer.enable</code> to your container running a VNC server and make sure it exists in the same network as the vnc-viewer container.<br />
+                            Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
+                        </p>
+                    )}
                     <pre>
-                        <code>docker run -d --label vnc-viewer.enable my-container</code>
+                        <code>
+                            {process.env.NEXT_PUBLIC_RUNTIME === "kubernetes"
+                                ? "kubectl label pod my-pod vnc-viewer.enable=true"
+                                : "docker run -d --label vnc-viewer.enable my-container"}
+                        </code>
                     </pre>
                     <p>
                         Read the <a href="https://github.com/PixNyb/vnc-viewer/blob/main/README.md">documentation</a> for more information.
