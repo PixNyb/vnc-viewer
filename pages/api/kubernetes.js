@@ -36,7 +36,6 @@ export default async function handler(req, res) {
             ) || pod.spec.containers[0];
 
             let vncPort = parseInt(pod.metadata.labels['dev.roelc.vnc-viewer/port']) || 5900;
-
             let vncHost = pod.status.podIP;
 
             try {
@@ -55,16 +54,15 @@ export default async function handler(req, res) {
                 });
 
                 if (matchingService) {
-                    vncHost = matchingService.spec.clusterIP;
-
                     const portMapping = matchingService.spec.ports.find(p =>
                         p.targetPort === vncPort ||
-                        p.targetPort === 'vnc' ||
-                        p.port === vncPort
+                        p.targetPort === 'vnc'
                     );
 
-                    if (portMapping)
+                    if (portMapping) {
                         vncPort = portMapping.port;
+                        vncHost = matchingService.spec.clusterIP;
+                    }
                 }
             } catch (error) {
                 console.error('Error getting services:', error);
