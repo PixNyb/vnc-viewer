@@ -3,8 +3,9 @@ import { getK8sClient } from "@/app/utils/k8s-util";
 export default async function handler(req, res) {
     try {
         const k8sClient = await getK8sClient();
+        console.log(k8sClient)
 
-        const labelSelector = 'vnc-viewer.enable=true';
+        const labelSelector = 'dev.roelc.vnc-viewer/enable=true';
 
         let pods = [];
         if (req.query.id) {
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
 
             try {
                 const { body } = await k8sClient.readNamespacedPod(podName, namespace);
-                if (body.metadata.labels && body.metadata.labels['vnc-viewer.enable'] === 'true') {
+                if (body.metadata.labels && body.metadata.labels['dev.roelc.vnc-viewer/enable'] === 'true') {
                     pods = [body];
                 }
             } catch (error) {
@@ -20,14 +21,11 @@ export default async function handler(req, res) {
                 return;
             }
         } else {
-            const { body } = await k8sClient.listPodForAllNamespaces(
-                undefined, // pretty
-                undefined, // allowWatchBookmarks
-                undefined, // _continue
-                undefined, // fieldSelector
-                labelSelector
-            );
-            pods = body.items;
+            const { items } = await k8sClient.listPodForAllNamespaces({
+                labelSelector,
+                watch: false,
+            });
+            pods = items;
         }
 
         pods = pods.filter(pod => pod.status.phase === 'Running');
@@ -37,26 +35,17 @@ export default async function handler(req, res) {
                 c.ports && c.ports.some(p => p.name === 'vnc' || p.containerPort === 5900)
             ) || pod.spec.containers[0];
 
-            let vncPort = parseInt(pod.metadata.labels['vnc-viewer.port'] || '5900');
+            let vncPort = parseInt(pod.metadata.labels['dev.roelc.vnc-viewer/port']) || 5900;
 
             let vncHost = pod.status.podIP;
 
             try {
-                const { body: services } = await k8sClient.listNamespacedService(
-                    pod.metadata.namespace,
-                    undefined, // pretty
-                    undefined, // allowWatchBookmarks
-                    undefined, // _continue
-                    undefined, // fieldSelector
-                    undefined, // labelSelector
-                    undefined, // limit
-                    undefined, // resourceVersion
-                    undefined, // resourceVersionMatch
-                    undefined, // timeoutSeconds
-                    undefined  // watch
-                );
+                const res = await k8sClient.listNamespacedService({
+                    namespace: pod.metadata.namespace,
+                    watch: false,
+                });
 
-                const matchingService = services.items.find(svc => {
+                const matchingService = res.items.find(svc => {
                     const selector = svc.spec.selector;
                     if (!selector) return false;
 
@@ -83,7 +72,7 @@ export default async function handler(req, res) {
 
             return {
                 id: `${pod.metadata.namespace}:${pod.metadata.name}`,
-                name: pod.metadata.labels['vnc-viewer.label'] || pod.metadata.name,
+                name: pod.metadata.labels['dev.roelc.vnc-viewer/name'] || pod.metadata.name,
                 image: container.image,
                 status: pod.status.phase,
                 labels: pod.metadata.labels,

@@ -79,9 +79,9 @@ labels:
 # Example podmanifests
 metadata:
   labels:
-    vnc-viewer.enable: "true"
-    vnc-viewer.label: "My VNC Server" # Optional
-    vnc-viewer.port: "5900" # Optional, defaults to 5900
+    dev.roelc.vnc-viewer/enable: "true"
+    dev.roelc.vnc-viewer/label: "My VNC Server" # Optional
+    dev.roelc.vnc-viewer/port: "5900" # Optional, defaults to 5900
 ```
 
 > [!NOTE]
@@ -95,6 +95,45 @@ metadata:
 >    constraints:
 >      - node.role == manager
 > ```
+
+> [!NOTE]
+> Kubernetes > The application uses the Kubernetes API to discover the VNC servers. Make sure that the application has the necessary permissions to access the API. This can be done by creating a service account and binding it to a role with the necessary permissions.
+> ```yaml
+> apiVersion: v1
+> kind: ServiceAccount
+> metadata:
+>   name: vnc-viewer
+> ---
+> apiVersion: rbac.authorization.k8s.io/v1
+> kind: ClusterRole
+> metadata:
+>   name: vnc-viewer-cluster-role
+> rules:
+>   - apiGroups:
+>       - ""
+>     resources:
+>       - pods
+>       - services
+>       - namespaces
+>     verbs:
+>       - get
+>       - list
+>       - watch
+> ---
+> apiVersion: rbac.authorization.k8s.io/v1
+> kind: ClusterRoleBinding
+> metadata:
+>   name: vnc-viewer-cluster-role-binding
+> subjects:
+>   - kind: ServiceAccount
+>     name: vnc-viewer
+>     namespace: default
+> roleRef:
+>   kind: ClusterRole
+>   name: vnc-viewer-cluster-role
+>   apiGroup: rbac.authorization.k8s.io
+> ```
+
 
 > [!NOTE]
 > When authentication is necessary to connect to a vnc server, a login form will be displayed. Not all vnc servers accept a username, so the username field is optional.

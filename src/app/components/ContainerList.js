@@ -73,8 +73,8 @@ export default function ContainerList() {
                 <div>
                     {runtime === "kubernetes" ? (
                         <p>
-                            To get started, add the label <code>vnc-viewer.enable</code> to your Kubernetes pod running a VNC server and ensure it is accessible within the same namespace or network.<br />
-                            Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
+                            To get started, add the label <code>dev.roelc.vnc-viewer/enable</code> to your Kubernetes pod running a VNC server and ensure it is accessible within the same namespace or network.<br />
+                            Optionally, you can specify a custom label and port using <code>dev.roelc.vnc-viewer/label</code> and <code>dev.roelc.vnc-viewer/port</code>.
                         </p>
                     ) : (
                         <p>
@@ -85,7 +85,7 @@ export default function ContainerList() {
                     <pre>
                         <code>
                             {runtime === "kubernetes"
-                                ? "kubectl label pod my-pod vnc-viewer.enable=true"
+                                ? "kubectl label pod my-pod dev.roelc.vnc-viewer/enable=true"
                                 : "docker run -d --label vnc-viewer.enable my-container"}
                         </code>
                     </pre>
