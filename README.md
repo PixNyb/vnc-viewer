@@ -60,10 +60,10 @@ kubectl run vnc-viewer \
 
 The following environment variables can be set to configure the application:
 
-| Variable                      | Description                                   | Default |
-| ----------------------------- | --------------------------------------------- | ------- |
-| `NEXT_PUBLIC_DISABLE_CREDITS` | Whether the credits should be disabled or not | `false` |
-| `NEXT_PUBLIC_RUNTIME` | Determines whether the application should be running in docker or kubernetes mode | `docker` |
+| Variable          | Description                                                                       | Default  |
+| ----------------- | --------------------------------------------------------------------------------- | -------- |
+| `DISABLE_CREDITS` | Whether the credits should be disabled or not                                     | `false`  |
+| `RUNTIME`         | Determines whether the application should be running in docker or kubernetes mode | `docker` |
 
 ### Connecting to a VNC server
 

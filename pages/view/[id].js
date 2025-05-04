@@ -1,10 +1,12 @@
 import VncViewer from '@/app/components/VncViewer';
+import getConfig from "next/config";
 import Head from 'next/head';
+
+const { publicRuntimeConfig } = getConfig()
 
 export async function getServerSideProps(context) {
     const { id } = context.params;
-    const runtime = process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? "kubernetes" : "docker";
-    const res = await fetch(`http://localhost:3000/api/${runtime}?id=${id}`);
+    const res = await fetch(`http://localhost:3000/api/${publicRuntimeConfig.runtime}?id=${id}`);
     const container = await res.json();
 
     return {

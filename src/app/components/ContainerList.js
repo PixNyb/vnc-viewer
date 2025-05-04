@@ -1,7 +1,10 @@
 'use client';
 
+import getConfig from "next/config";
 import { useEffect, useRef, useState } from "react";
 import ContainerCard from "./ContainerCard";
+
+const { publicRuntimeConfig } = getConfig()
 
 export default function ContainerList() {
     const [containers, setContainers] = useState([]);
@@ -10,8 +13,7 @@ export default function ContainerList() {
     useEffect(() => {
         async function fetchContainers() {
             try {
-                const runtime = process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? "kubernetes" : "docker";
-                const response = await fetch("/api/" + runtime);
+                const response = await fetch("/api/" + publicRuntimeConfig.runtime);
                 const data = await response.json();
 
                 const newContainerMap = new Map();
@@ -57,7 +59,7 @@ export default function ContainerList() {
 
             {containers.length === 0 &&
                 <div>
-                    {process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? (
+                    {publicRuntimeConfig.runtime === "kubernetes" ? (
                         <p>
                             To get started, add the label <code>vnc-viewer.enable</code> to your Kubernetes pod running a VNC server and ensure it is accessible within the same namespace or network.<br />
                             Optionally, you can specify a custom label and port using <code>vnc-viewer.label</code> and <code>vnc-viewer.port</code>.
@@ -70,7 +72,7 @@ export default function ContainerList() {
                     )}
                     <pre>
                         <code>
-                            {process.env.NEXT_PUBLIC_RUNTIME === "kubernetes"
+                            {publicRuntimeConfig.runtime === "kubernetes"
                                 ? "kubectl label pod my-pod vnc-viewer.enable=true"
                                 : "docker run -d --label vnc-viewer.enable my-container"}
                         </code>

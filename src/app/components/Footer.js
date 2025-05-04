@@ -1,5 +1,9 @@
+import getConfig from "next/config";
+
+const { publicRuntimeConfig } = getConfig()
+
 export default function Footer() {
-    const disableCredits = process.env.NEXT_PUBLIC_DISABLE_CREDITS === "true";
+    const disableCredits = publicRuntimeConfig.disableCredits === "true";
 
     return (disableCredits ? null :
         <footer>
