@@ -3,7 +3,8 @@ import Head from 'next/head';
 
 export async function getServerSideProps(context) {
     const { id } = context.params;
-    const res = await fetch(`http://localhost:3000/api/containers?id=${id}`);
+    const runtime = process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? "kubernetes" : "docker";
+    const res = await fetch(`http://localhost:3000/api/${runtime}?id=${id}`);
     const container = await res.json();
 
     return {

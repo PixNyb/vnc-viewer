@@ -10,7 +10,8 @@ export default function ContainerList() {
     useEffect(() => {
         async function fetchContainers() {
             try {
-                const response = await fetch("/api/containers");
+                const runtime = process.env.NEXT_PUBLIC_RUNTIME === "kubernetes" ? "kubernetes" : "docker";
+                const response = await fetch("/api/" + runtime);
                 const data = await response.json();
 
                 const newContainerMap = new Map();
