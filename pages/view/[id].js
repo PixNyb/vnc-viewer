@@ -13,6 +13,7 @@ export async function getServerSideProps(context) {
         props: {
             title: `Displaying ${container.name}`,
             description: `Displaying the VNC viewer for ${container.port}.`,
+            runtime: publicRuntimeConfig.runtime,
             container,
         },
     };
