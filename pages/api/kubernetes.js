@@ -11,9 +11,13 @@ export default async function handler(req, res) {
             const [namespace, podName] = req.query.id.split(':');
 
             try {
-                const { body } = await k8sClient.readNamespacedPod(podName, namespace);
-                if (body.metadata.labels && body.metadata.labels['dev.roelc.vnc-viewer/enable'] === 'true') {
-                    pods = [body];
+                const res = await k8sClient.readNamespacedPod({
+                    name: podName,
+                    namespace,
+                    watch: false,
+                });
+                if (res.metadata.labels && res.metadata.labels['dev.roelc.vnc-viewer/enable'] === 'true') {
+                    pods = [res];
                 }
             } catch (error) {
                 res.status(404).json({ error: "Pod not found." });
