@@ -56,6 +56,9 @@ kubectl run vnc-viewer \
 > [!WARNING]
 > The container in itself doesn't have any security measures implemented. It is recommended to run the container in a secure environment. (e.g. behind traefik with authentication middleware such as [pixnyb/authentication-proxy](https://github.com/PixNyb/authentication-proxy))
 
+> [!NOTE]
+> In a docker setting, the container needs access to the docker socket to be able to discover other containers running VNC servers. Please make sure the socket is mounted correctly and access is granted. (This may require running the container as root)
+
 ### Environment variables
 
 The following environment variables can be set to configure the application:
