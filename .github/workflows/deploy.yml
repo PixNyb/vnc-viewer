@@ -90,12 +90,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Login to Nexus Docker Registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: nexus.roelc.dev
-      #     username: ${{ vars.NEXUS_USERNAME }}
-      #     password: ${{ secrets.NEXUS_PASSWORD }}
+      - name: Login to Nexus Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: nexus.roelc.dev
+          username: ${{ vars.NEXUS_USERNAME }}
+          password: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -107,5 +107,6 @@ jobs:
           tags: |
             ${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
             ghcr.io/${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
+            nexus.roelc.dev/vnc-viewer:${{ needs.setup.outputs.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
