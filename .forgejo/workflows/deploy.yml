@@ -64,7 +64,7 @@ jobs:
         run: npm run lint
 
   build-and-push:
-    runs-on: alpine
+    runs-on: node
     needs: [setup, lint]
     if: ${{ needs.setup.outputs.is_pr == 'false' }}
 
