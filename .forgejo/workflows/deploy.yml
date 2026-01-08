@@ -69,6 +69,12 @@ jobs:
     if: ${{ needs.setup.outputs.is_pr == 'false' }}
 
     steps:
+      - name: Log Docker environment
+        run: |
+          docker context ls
+          docker info
+          echo $DOCKER_HOST
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
