@@ -15,7 +15,7 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: alpine
 
     outputs:
       lowercase: ${{ steps.lowercase.outputs.LOWERCASE }}
@@ -54,17 +54,11 @@ jobs:
           fi
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: node-22
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Install node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -73,7 +67,7 @@ jobs:
         run: npm run lint
 
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: alpine
     needs: [setup, lint]
     if: ${{ needs.setup.outputs.is_pr == 'false' }}
 
