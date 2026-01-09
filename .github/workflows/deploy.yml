@@ -1,5 +1,9 @@
 name: Build and Publish Docker Image
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
@@ -15,20 +19,22 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: alpine
 
     outputs:
-      lowercase: ${{ steps.lowercase.outputs.LOWERCASE }}
+      owner: ${{ steps.owner.outputs.LOWERCASE }}
+      repository: ${{ steps.repository.outputs.LOWERCASE }}
       is_pr: ${{ steps.pr.outputs.IS_PR }}
       tag_name: ${{ steps.tag.outputs.TAG_NAME }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Convert repository owner to lowercase
-        id: lowercase
+        id: owner
         run: echo "LOWERCASE=$(echo ${{ github.repository_owner }} | awk '{print tolower($0)}')" >> $GITHUB_OUTPUT
+
+      - name: Convert repository name to lowercase
+        id: repository
+        run: echo "LOWERCASE=$(echo ${{ github.repository }} | awk '{print tolower($0)}')" >> $GITHUB_OUTPUT
 
       - name: Check if currently in a pull request
         id: pr
@@ -50,17 +56,11 @@ jobs:
           fi
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: node-22
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "npm"
+        uses: actions/checkout@v6
 
       - name: Install dependencies
         run: npm ci
@@ -80,22 +80,23 @@ jobs:
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ needs.setup.outputs.owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Nexus Docker Registry
+      - name: Login to Forgejo Container Registry
         uses: docker/login-action@v3
         with:
-          registry: nexus.roelc.dev
-          username: ${{ vars.NEXUS_USERNAME }}
-          password: ${{ secrets.NEXUS_PASSWORD }}
+          registry: git.roelc.dev
+          username: ${{ vars.FORGEJO_USERNAME }}
+          password: ${{ secrets.FORGEJO_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -105,8 +106,8 @@ jobs:
           sbom: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
-            ghcr.io/${{ needs.setup.outputs.lowercase }}/vnc-viewer:${{ needs.setup.outputs.tag_name }}
-            nexus.roelc.dev/vnc-viewer:${{ needs.setup.outputs.tag_name }}
+            docker.io/${{ needs.setup.outputs.repository }}:${{ needs.setup.outputs.tag_name }}
+            ghcr.io/${{ needs.setup.outputs.repository }}:${{ needs.setup.outputs.tag_name }}
+            git.roelc.dev/${{ needs.setup.outputs.repository }}:${{ needs.setup.outputs.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
