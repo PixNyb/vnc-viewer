@@ -93,8 +93,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY_URL }}
-          username: ${{ forgejo.actor }}
-          password: ${{ forgejo.token }}
+          username: ${{ needs.setup.outputs.owner }}
+          password: ${{ secrets.PACKAGE_PUSH_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v5
