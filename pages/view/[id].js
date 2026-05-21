@@ -1,19 +1,17 @@
 import VncViewer from '@/app/components/VncViewer';
-import getConfig from "next/config";
 import Head from 'next/head';
-
-const { publicRuntimeConfig } = getConfig()
 
 export async function getServerSideProps(context) {
     const { id } = context.params;
-    const res = await fetch(`http://localhost:3000/api/${publicRuntimeConfig.runtime}?id=${id}`);
+    const runtime = process.env.RUNTIME;
+    const res = await fetch(`http://localhost:3000/api/${runtime}?id=${id}`);
     const container = await res.json();
 
     return {
         props: {
             title: `Displaying ${container.name}`,
             description: `Displaying the VNC viewer for ${container.port}.`,
-            runtime: publicRuntimeConfig.runtime,
+            runtime,
             container,
         },
     };

@@ -1,9 +1,8 @@
-import getConfig from "next/config";
-
-const { publicRuntimeConfig } = getConfig()
+import { faCode, faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Footer() {
-    const disableCredits = publicRuntimeConfig.disableCredits === "true";
+    const disableCredits = process.env.DISABLE_CREDITS === "true";
 
     return (disableCredits ? null :
         <footer>
@@ -12,10 +11,10 @@ export default function Footer() {
             </span>
             <span style={{ display: 'flex', gap: '0.6rem' }}>
                 <a href="https://github.com/pixnyb/vnc-viewer" target="_blank" referrerPolicy="no-referrer" style={{ textDecoration: 'none' }}>
-                    <i className="fas fa-code" title="View source code"></i>
+                    <FontAwesomeIcon icon={faCode} aria-label="View source code" />
                 </a>
                 <a href="https://www.buymeacoffee.com/pixnyb" target="_blank" referrerPolicy="no-referrer" style={{ textDecoration: 'none' }}>
-                    < i className="fas fa-coffee" title="Buy me a coffee"></i>
+                    <FontAwesomeIcon icon={faCoffee} aria-label="Buy me a coffee" />
                 </a>
             </span>
         </footer>

@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-    publicRuntimeConfig: {
-        runtime: process.env.RUNTIME === 'kubernetes' ? 'kubernetes' : 'docker',
-        disableCredits: process.env.DISABLE_CREDITS === 'true',
+    env: {
+        RUNTIME: process.env.RUNTIME === 'kubernetes' ? 'kubernetes' : 'docker',
+        DISABLE_CREDITS: process.env.DISABLE_CREDITS === 'true' ? 'true' : 'false',
     },
     webpack: (config) => {
         config.module.rules.push({

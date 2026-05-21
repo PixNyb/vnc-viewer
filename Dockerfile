@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:26-slim
 LABEL maintainer="Roël Couwenberg <contact@roelc.me>"
 LABEL org.opencontainers.image.title="VNC Viewer"
 LABEL org.opencontainers.image.description="A Dockerised vnc viewer to be used with other containers."

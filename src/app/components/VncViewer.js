@@ -140,7 +140,7 @@ const VncViewer = ({ host, port, options, link, title }) => {
 
     useEffect(() => {
         const loadRFB = async () => {
-            const { default: RFB } = await import('@novnc/novnc/lib/rfb');
+            const { default: RFB } = await import('@novnc/novnc');
             setRFB(() => RFB);
         };
 
