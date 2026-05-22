@@ -1,26 +1,19 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import './ContainerCard.css';
 import VncViewer from "./VncViewer";
 
 export default function ContainerCard({ container }) {
-    const [containerData, setContainerData] = useState(container);
-
-    useEffect(() => {
-        setContainerData(container);
-    }, [container]);
-
-    if (!containerData)
+    if (!container)
         return null;
 
     return (
         <VncViewer
-            title={containerData.name}
-            host={containerData.host}
-            port={containerData.port}
+            title={container.name}
+            host={container.host}
+            port={container.port}
             link={{
-                path: `/view/${containerData.id}`
+                path: `/view/${container.id}`
             }}
             options={{
                 style: {
