@@ -1,5 +1,5 @@
 import Head from "next/head";
-import "../globals.css";
+import "../globals.scss";
 import Footer from "./Footer";
 
 export default function Layout({ children, title = "VNC Viewer", description = "A VNC viewer for your containers." }) {

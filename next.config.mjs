@@ -11,7 +11,7 @@ const nextConfig = {
             type: 'javascript/esm',
         });
         return config;
-    },
+    }
 };
 
 export default nextConfig;
